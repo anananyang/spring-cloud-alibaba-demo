@@ -1,0 +1,30 @@
+server:
+  port: 9001
+  # 允许 IP 访问
+  address: 0.0.0.0
+  servlet:
+    context-path: /provider
+
+
+spring:
+  application:
+    name: provider-service
+  cloud:
+    nacos:
+      discovery:
+        # 集群使用逗号分割
+        server-addr: localhost:8848
+      username: nacos
+      password: nacos
+
+# actuator
+management:
+  endpoints:
+    jmx:
+      exposure:
+        include: "*"
+    web:
+      exposure:
+        include: "*"
+    health:
+      show-details: always
