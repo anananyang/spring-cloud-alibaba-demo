@@ -1,0 +1,44 @@
+server:
+  port: 9100
+  # 允许 IP 访问
+  address: "0.0.0.0"
+  servlet:
+    context-path: /consumer
+
+spring:
+  application:
+    name: consumer-service
+  profiles:
+    active: consumer9100
+  cloud:
+    nacos:
+      discovery:
+        # 集群使用逗号分割
+        server-addr: localhost:8848
+
+      username: nacos
+      password: nacos
+
+      config:
+        server-addr: localhost:8848
+        file-extension: yaml
+        refresh-enabled: true
+        group: MY_GROUP
+        namespace: 8610414c-4f96-4653-ba83-3b5bdfbc09cd
+        name: consumer-service-${spring.profiles.active}
+
+
+# actuator
+management:
+  endpoints:
+    jmx:
+      exposure:
+        include: '*'
+    web:
+      exposure:
+        include: '*'
+    health:
+      show-details: always
+
+#debug: true
+

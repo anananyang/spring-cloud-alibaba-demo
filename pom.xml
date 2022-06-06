@@ -22,7 +22,7 @@
 
     <properties>
         <spring-cloud.version>Greenwich.SR4</spring-cloud.version>
-        <spring-cloud-alibaba.version>2.1.0.RELEASE</spring-cloud-alibaba.version>
+        <spring-cloud-alibaba.version>2.1.2.RELEASE</spring-cloud-alibaba.version>
     </properties>
 
     <dependencyManagement>
@@ -52,13 +52,8 @@
                 <scope>import</scope>
             </dependency>
 
-
         </dependencies>
     </dependencyManagement>
-
-    <dependencies>
-
-    </dependencies>
 
 
 </project>

@@ -1,12 +1,15 @@
 package com.anyang.consumer.controller;
 
+import com.alibaba.nacos.api.config.annotation.NacosValue;
 import com.anyang.common.base.Result;
 import com.anyang.consumer.remote.ProviderFeignClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +17,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.Map;
 
+@RefreshScope
 @Controller
 @RequestMapping("resources")
 @Slf4j
@@ -30,6 +36,10 @@ public class ConsumerController {
     private ProviderFeignClient providerFeignClient;
     @Autowired
     private DiscoveryClient discoveryClient;
+    @Value("${my.user.name}")
+    private String myName;
+    @Value("${my.user.password}")
+    private String myPassword;
 
     private static final String PROVIDRE_URL = "http://provider-service/provider/resources/getAll";
 
@@ -74,6 +84,15 @@ public class ConsumerController {
         log.info(discoveryClient.description());
         Object object = discoveryClient.getServices();
         return Result.wrapSuccess(object);
+    }
+
+    @RequestMapping("getMyConfig")
+    @ResponseBody
+    public Result<?> getMyConfig() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("myName", myName);
+        map.put("myPassword", myPassword);
+        return Result.wrapSuccess(map);
     }
 
 }
