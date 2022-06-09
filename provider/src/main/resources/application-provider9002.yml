@@ -1,5 +1,5 @@
 server:
-  port: 9000
+  port: 9002
   # 允许 IP 访问
   address: 0.0.0.0
   servlet:
@@ -17,15 +17,10 @@ spring:
         cluster-name: hangzhou
         metadata:
           version: v1  # 调用指定版本
-        namespace: 8610414c-4f96-4653-ba83-3b5bdfbc09cd
-        group: DEFAULT_GROUP
       username: nacos
       password: nacos
-    sentinel:
-      enabled: true
-      transport:
-        dashboard: localhost:8080
-        port: 8719
+
+
 # actuator
 management:
   endpoints:

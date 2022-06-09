@@ -1,8 +1,9 @@
 package com.anyang.consumer.controller;
 
-import com.alibaba.nacos.api.config.annotation.NacosValue;
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.anyang.common.base.Result;
-import com.anyang.consumer.remote.ProviderFeignClient;
+import com.anyang.consumer.sentinel.MyFallBack;
+import com.anyang.remote.provider.ProviderFeignClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +14,7 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
@@ -53,6 +55,9 @@ public class ConsumerController {
                 serviceInstance.getPort());
 
         return restTemplate.getForObject(url, Result.class);
+
+//        ResponseEntity<Result> responseEntity =  restTemplate.getForEntity(url, Result.class);
+
     }
 
 
@@ -95,4 +100,28 @@ public class ConsumerController {
         return Result.wrapSuccess(map);
     }
 
+
+    /**
+     * 热点参数规则测试
+     *
+     * @return
+     */
+    @SentinelResource(value = "app", fallback = "fallback", fallbackClass = MyFallBack.class)
+    @RequestMapping("sentinelResourceTest")
+    @ResponseBody
+    public Result<?> sentinelResourceTest(@RequestParam(value = "a", required = false) String a,
+                                          @RequestParam(value = "b", required = false) String b) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("a", a);
+        map.put("b", b);
+        int c = 10 / 0;
+        return Result.wrapSuccess(map);
+    }
+
+    public Result<?> fallback(String a, String b) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("a", "fallback");
+        map.put("b", "fallback");
+        return Result.wrapSuccess(map);
+    }
 }

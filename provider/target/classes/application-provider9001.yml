@@ -14,6 +14,11 @@ spring:
       discovery:
         # 集群使用逗号分割
         server-addr: localhost:8848
+        cluster-name: shanghai
+        metadata:
+           version: v2  # 调用指定版本
+        namespace: 8610414c-4f96-4653-ba83-3b5bdfbc09cd
+        group: DEFAULT_GROUP
       username: nacos
       password: nacos
 

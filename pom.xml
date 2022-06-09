@@ -12,6 +12,7 @@
         <module>common</module>
         <module>provider</module>
         <module>consumer</module>
+        <module>remote</module>
     </modules>
 
     <parent>
@@ -32,6 +33,12 @@
             <dependency>
                 <groupId>com.anyang</groupId>
                 <artifactId>common</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.anyang</groupId>
+                <artifactId>remote</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>
 

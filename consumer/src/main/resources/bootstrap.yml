@@ -4,6 +4,10 @@ server:
   address: "0.0.0.0"
   servlet:
     context-path: /consumer
+  error:
+      include-binding-errors: always
+      include-message: always
+      include-stacktrace: always
 
 spring:
   application:
@@ -15,7 +19,11 @@ spring:
       discovery:
         # 集群使用逗号分割
         server-addr: localhost:8848
-
+        cluster-name: hangzhou  # 同名集群的服务优先调用
+        metadata:
+          version: v1  # 调用指定版本
+        namespace: 8610414c-4f96-4653-ba83-3b5bdfbc09cd
+        group: DEFAULT_GROUP
       username: nacos
       password: nacos
 
@@ -26,6 +34,31 @@ spring:
         group: MY_GROUP
         namespace: 8610414c-4f96-4653-ba83-3b5bdfbc09cd
         name: consumer-service-${spring.profiles.active}
+    sentinel:
+      enabled: true
+      transport:
+        dashboard: localhost:8080
+        port: 8720
+      eager: true  # 饥饿加载
+      filter:
+        enabled: true # 是否开启对 controller 的保护，如果关闭，则不会将controller注册到 sentinel-bashboard
+      datasource:
+        ds1:
+          nacos:
+            server-addr: localhost:8848
+            data-id: ${spring.application.name}-flow.json
+            group-id: DEFAULT_GROUP
+            data-type: json
+            rule-type: flow
+            namespace: 8610414c-4f96-4653-ba83-3b5bdfbc09cd
+        ds2:
+          nacos:
+            server-addr: localhost:8848
+            data-id: ${spring.application.name}-system.json
+            group-id: DEFAULT_GROUP
+            data-type: json
+            rule-type: system
+            namespace: 8610414c-4f96-4653-ba83-3b5bdfbc09cd
 
 
 # actuator
@@ -39,6 +72,31 @@ management:
         include: '*'
     health:
       show-details: always
+
+ribbon:
+  eager-load:
+    enabled: true  # 饥饿加载，一启动就从注册中心获取服务缓存
+#    client: provider-service # 为指定的客户端开启饥饿加载
+
+feign:
+  client:
+    config:
+      default:  # 所有的服务服务，也可以替换成具体的服务名称，比如 provider-service
+        read-timeout: 30000
+        connect-timeout: 10000
+  # 配置底层使用 http client。默认 feign 也是使用 httpclient
+  httpclient:
+    enabled: true
+    max-connections: 200 # 连接池中的最大连接数
+    max-connections-per-route: 50
+  sentinel:
+    enabled: true
+
+# resttemplate 整合 sentinel
+resttemplate:
+  sentinel:
+    enabled: true
+
 
 #debug: true
 
